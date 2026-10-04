@@ -1,0 +1,82 @@
+---
+type Props = {
+  title?: string;
+  description?: string;
+};
+
+const siteName = 'Astro Blog';
+const { title, description = 'microCMS + Astro + Cloudflare Pages のテストサイト' } = Astro.props;
+const pageTitle = title ? `${title} | ${siteName}` : siteName;
+---
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+  </head>
+  <body>
+    <header>
+      <a href="/" class="logo">{siteName}</a>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer>
+      <p>&copy; {siteName}</p>
+    </footer>
+  </body>
+</html>
+
+<style is:global>
+  body {
+    margin: 0;
+    font-family: system-ui, sans-serif;
+    color: #222;
+    line-height: 1.8;
+  }
+  header,
+  main,
+  footer {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 16px;
+  }
+  header {
+    border-bottom: 1px solid #eee;
+  }
+  .logo {
+    font-weight: bold;
+    font-size: 1.25rem;
+    color: inherit;
+    text-decoration: none;
+  }
+  footer {
+    color: #888;
+    font-size: 0.875rem;
+    text-align: center;
+  }
+  a {
+    color: #2563eb;
+  }
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    background: #f1f1f1;
+    border-radius: 4px;
+    padding: 0 8px;
+    margin-right: 4px;
+  }
+  .date {
+    color: #888;
+    font-size: 0.875rem;
+  }
+</style>

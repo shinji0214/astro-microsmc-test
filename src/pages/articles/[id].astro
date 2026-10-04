@@ -1,0 +1,103 @@
+---
+import type { GetStaticPaths } from 'astro';
+import Layout from '../../layouts/Layout.astro';
+import { getAllArticles, type Article } from '../../lib/microcms';
+import { formatDate } from '../../lib/utils';
+
+// ビルド時に全記事を取得し、記事ごとに /articles/{id}/ のページを生成する
+export const getStaticPaths = (async () => {
+  const articles = await getAllArticles();
+  return articles.map((article) => ({
+    params: { id: article.id },
+    props: { article },
+  }));
+}) satisfies GetStaticPaths;
+
+type Props = {
+  article: Article;
+};
+
+const { article } = Astro.props;
+---
+
+<Layout title={article.title} description={article.description}>
+  <article>
+    <h1>{article.title}</h1>
+    <p>{article.tags.map((tag) => <span class="tag">#{tag.name}</span>)}</p>
+    <div class="meta">
+      {
+        article.writer && (
+          <span class="writer">
+            {article.writer.image && (
+              <img src={`${article.writer.image.url}?fm=webp&fit=crop&w=48&h=48`} alt="" width="24" height="24" />
+            )}
+            {article.writer.name}
+          </span>
+        )
+      }
+      <span class="date">{formatDate(article.publishedAt ?? article.createdAt)}</span>
+    </div>
+    {
+      article.thumbnail && (
+        <img
+          src={`${article.thumbnail.url}?fm=webp&w=720`}
+          alt=""
+          width={article.thumbnail.width}
+          height={article.thumbnail.height}
+        />
+      )
+    }
+    <div class="content" set:html={article.content} />
+    {
+      article.writer && (
+        <aside class="profile">
+          {article.writer.image && (
+            <img src={`${article.writer.image.url}?fm=webp&fit=crop&w=96&h=96`} alt="" width="48" height="48" />
+          )}
+          <div>
+            <p class="name">{article.writer.name}</p>
+            <p>{article.writer.profile}</p>
+          </div>
+        </aside>
+      )
+    }
+  </article>
+  <p><a href="/">← 記事一覧へ</a></p>
+</Layout>
+
+<style>
+  h1 {
+    font-size: 1.75rem;
+    line-height: 1.4;
+    margin-bottom: 8px;
+  }
+  .meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .writer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .writer img,
+  .profile img {
+    border-radius: 50%;
+  }
+  .profile {
+    display: flex;
+    gap: 16px;
+    margin-top: 40px;
+    padding: 16px;
+    background: #f8f8f8;
+    border-radius: 8px;
+  }
+  .profile p {
+    margin: 0;
+  }
+  .profile .name {
+    font-weight: bold;
+  }
+</style>
