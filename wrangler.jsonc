@@ -1,0 +1,11 @@
+// Cloudflare Workers の設定（静的サイトとして dist を公開する）
+// https://developers.cloudflare.com/workers/static-assets/
+{
+  // ダッシュボードで作成する Worker の名前と合わせる（URL は <name>.<サブドメイン>.workers.dev）
+  "name": "astro-microsmc-test",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    // npm run build で生成されるフォルダ
+    "directory": "./dist"
+  }
+}
